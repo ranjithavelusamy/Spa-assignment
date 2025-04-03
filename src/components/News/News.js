@@ -5,10 +5,8 @@ import NullImage from "../../components/Images/nullImage.png";
 import Loading from "../Loading/Loading";
 import NewsItem from "../NewsItem/NewsItem";
 import { v4 as uuidv4 } from "uuid";
-import { Col, Row } from "react-bootstrap";
-import { header } from "../../config/config";
 import { endpointPath } from "../../config/api";
-import { Container, Header, card } from "./index";
+import "./News.css";
 
 function News(props) {
   const { newscategory, country } = props;
@@ -32,6 +30,7 @@ function News(props) {
       setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -41,37 +40,51 @@ function News(props) {
   }, []);
 
   return (
-    <>
+    <div className="news-container">
       {loading ? (
-        <Loading />
+        <div className="loading-container">
+          <Loading />
+        </div>
       ) : (
         <>
-          <Header>{header(capitaLize(category))}</Header>
-          <Container>
-            <Row>
-              {articles.map((element) => {
-                return (
-                  <Col sm={12} md={6} lg={4} xl={3} style={card} key={uuidv4()}>
-                    <NewsItem
-                      title={element.title}
-                      description={element.description}
-                      published={element.publishedAt}
-                      channel={element.source.name}
-                      alt="News image"
-                      publishedAt={element.publishedAt}
-                      imageUrl={
-                        element.image === null ? NullImage : element.image
-                      }
-                      urlNews={element.url}
-                    />
-                  </Col>
-                );
-              })}
-            </Row>
-          </Container>
+          <div className="news-header">
+            <h1>{capitaLize(category)} News</h1>
+          </div>
+          {articles.length === 0 ? (
+            <div className="empty-state">
+              <h2>No News Found</h2>
+              <p>We couldn't find any news articles for this category.</p>
+            </div>
+          ) : (
+            <div className="news-grid">
+              {articles.map((element) => (
+                <div className="news-card" key={uuidv4()}>
+                  <div className="category-badge">{category}</div>
+                  <img
+                    src={element.image === null ? NullImage : element.image}
+                    alt="News"
+                    className="news-image"
+                  />
+                  <div className="news-content">
+                    <h2 className="news-title">{element.title}</h2>
+                    <p className="news-description">{element.description}</p>
+                    <div className="news-meta">
+                      <span className="news-source">{element.source.name}</span>
+                      <span className="news-date">
+                        {new Date(element.publishedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <a href={element.url} target="_blank" rel="noopener noreferrer" className="read-more">
+                      Read More
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
-    </>
+    </div>
   );
 }
 
