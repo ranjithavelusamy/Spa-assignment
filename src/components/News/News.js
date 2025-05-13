@@ -74,9 +74,6 @@ function News(props) {
                         {new Date(element.publishedAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <a href={element.url} target="_blank" rel="noopener noreferrer" className="read-more">
-                      Read More
-                    </a>
                   </div>
                 </div>
               ))}
